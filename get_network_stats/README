@@ -1,0 +1,27 @@
+These are used for gathering and graphing network information
+for a linux based system.
+
+It is assumed that you have a working nagios installation with pnp4nagios.
+
+Quick overview of what to do:
+
+1) copy get_network_stats.py to the various host machines to be monitored
+2) add the appropriate nagios command and service definition, making
+sure that the paths are setup correctly.
+3) copy the template file into your pnp4nagios share/templates directory
+4) reload nagios
+
+Example nagios definition:
+
+define command {
+  command_name  get_network_stats
+  command_line  /usr/bin/ssh $HOSTADDRESS$ python $USER3$/get_network_stats.py -i $ARG1$
+}
+
+define service {
+  use                   noncritical-service
+  hostgroup_name        linux-servers
+  service_description   STATS-network_io
+  check_command         get_network_stats!eth0,bond0
+}
+
