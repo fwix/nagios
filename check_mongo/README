@@ -1,0 +1,55 @@
+These are used for gathering and graphing network information
+for mongo cluster.
+
+This requires that you have pymongo installed
+
+It is assumed that you have a working nagios installation with pnp4nagios.
+
+Quick overview of what to do:
+
+1) copy check_mongo.py to your nagios scripts directory
+2) add the appropriate nagios command and service definition, making
+sure that the paths are setup correctly.
+3) copy the template file into your pnp4nagios share/templates directory
+4) reload nagios
+
+Example nagios definitions:
+define command {
+  command_name          check_mongo
+  command_line          $USER4$/check_mongo.py -H $HOSTADDRESS$ -m $ARG1$
+}
+
+define service {
+  use                   noncritical-service
+  hostgroup_name        mongo-servers
+  service_description   STAT-mongo_opcounters
+  check_command         check_mongo!opcounters
+}
+
+define service {
+  use                   noncritical-service
+  hostgroup_name        mongo-servers
+  service_description   STAT-mongo_connections
+  check_command         check_mongo!connections
+}
+
+define service {
+  use                   noncritical-service
+  hostgroup_name        mongo-servers
+  service_description   STAT-mongo_network_io
+  check_command         check_mongo!network_io
+}
+
+define service {
+  use                   noncritical-service
+  hostgroup_name        mongo-servers
+  service_description   STAT-mongo_memory
+  check_command         check_mongo!memory
+}
+
+define service {
+  use                   generic-service
+  hostgroup_name        mongo-servers
+  service_description   mongo_replication
+  check_command         check_mongo!replication
+}
