@@ -53,9 +53,9 @@ def GetInterfaces():
 def ParseCommandLine():
   desc = """Intended to pair with pnp4nagios in order to
 provide stats for your network usage. This script will *always*
-return as an OK for nagios."""
-  epilog = 'Example Usage: %s -i eth0,eth1' % sys.argv[0]
-  parser = optparse.OptionParser(epilog=epilog, description=desc)
+return as an OK for nagios.
+Example Usage: %s -i eth0,eth1""" % sys.argv[0]
+  parser = optparse.OptionParser(description=desc)
   parser.add_option('-i', 
                     help='comma seperated list of interfaces', 
                     dest='interfaces', 
