@@ -1,0 +1,36 @@
+These are used for gathering and graphing network information
+from membase.
+
+This requires that you have simplejson installed
+
+Quick overview of what to do:
+
+1) copy check_membase*.py to your nagios scripts directory
+2) add the appropriate nagios command and service definition, making
+sure that the paths are setup correctly.
+3) reload nagios
+
+Example nagios definitions:
+ service command {
+  command_name		check_membase_pool
+  command_line		$USER4$/check_membase_pool.py -H $HOSTNAME$ --pool $ARG1$ -u [membase_admin] -p [admin_password]
+}
+
+define command {
+  command_name		check_membase_ops
+  command_line		$USER4$/check_membase_ops.py -H $HOSTNAME$ --pool $ARG1$ -u [membase_admin] -p [admin_password]
+}
+
+define service {
+  use			generic-service
+  hostgroup_name	membase-servers
+  service_description	check_membase_pool
+  check_command		check_membase_pool!default
+}
+
+define service {
+  use			noncritical-service
+  hostgroup_name	membase-servers
+  service_description	check_membase_ops
+  check_command		check_membase_ops!default
+}
