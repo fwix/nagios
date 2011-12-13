@@ -1,0 +1,43 @@
+This script is used for gathering some stats from elasticsearch
+and some basic alerting
+
+This requires you have pyes installed.
+
+Quick overview of what to do:
+
+1) copy check_elasticsearch.py to your nagios scripts directory
+2) add the appropriate nagios command and service definition, making
+sure that the paths are setup correctly.
+3) reload nagios
+
+Example nagios definitions:
+define command {
+  command_name          check_elasticsearch_cluster
+  command_line          python $USER4$/check_elasticsearch.py -H $HOSTADDRESS$ -m $ARG1$
+}
+
+define command {
+  command_name          check_elasticsearch_index
+  command_line          python $USER4$/check_elasticsearch.py -H $HOSTADDRESS$ -m $ARG1$ -i $ARG2$
+}
+
+define service {
+  use			noncritical-service
+  hostgroup_name        elasticsearch-servers
+  service_description	check_elasticsearch-cluster_health
+  check_command		check_elasticsearch_cluster!cluster_health
+}
+
+define service {
+  use			noncritical-service
+  hostgroup_name        elasticsearch-servers
+  service_description	check_elasticsearch-shard_count_myindex
+  check_command		check_elasticsearch_index!shard_counts!myindex
+}
+
+define service {
+  use			noncritical-service
+  hostgroup_name        elasticsearch-servers
+  service_description	check_elasticsearch-index_info_myindex
+  check_command		check_elasticsearch_index!index_info!myindex
+}
